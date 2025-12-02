@@ -8,7 +8,10 @@ import sys
 import math
 import requests
 from bs4 import BeautifulSoup
+import multiprocessing
 
+list_numbers = list(range(12))
+# list_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 # Permite trabalhar com números de até ~1 milhão de dígitos
 sys.set_int_max_str_digits(1_000_000)  
 
@@ -17,7 +20,7 @@ def convertNumbers(*numbers: list[str]) -> list[float]:
     Converte uma sequência de valores string para uma lista de floats.
 
     Args: *numbers: Sequência de valores numéricos em formato string.
-    Returns: list[float] | str: Lista de números convertidos, ou mensagem de erro.
+    Returns: list[float] | str: Lista de números convertidos, ou mensagem de err o.
     """
     try: 
         # Transforma em um vetor de inteiros
@@ -80,12 +83,32 @@ def factorial(x: str) -> str:
         return x
 
     if x < 0 or not x.is_integer():
+        
         return "\nErro: forneça um inteiro não negativo.\n"
 
     try:
         return str(math.factorial((int)(x)))
     except (OverflowError, MemoryError):
         return "\nErro: cálculo muito grande para ser realizado.\n"
+
+def check_primes(numbers):
+    with multiprocessing.Pool(processes=2) as pool:
+        result = pool.map(_is_prime, numbers)
+
+    return result
+
+def _is_prime(number: int) -> bool:
+    if number < 2:
+        return False
+    
+    n = number - 1
+    
+    while n > 1:
+        if number % n == 0:
+            return False
+        n -= 1
+
+    return True 
 
 def get_uol_news() -> str:
     url = "https://www.uol.com.br/"

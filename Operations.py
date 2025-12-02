@@ -3,18 +3,22 @@
 import tcp_client as client
 import server.consts as consts
 from exceptions import RpcServerNotFound 
+
+from datetime import datetime
+import json
 import functools  # Usado para wraps
 import time       # Usado para timestamp
 
 # Dicionário simples para simular cache em memória principal
 cache = {} # cache[key] = (resultado, timestamp)
 
-import functools
-import time
-import json
-from exceptions import RpcServerNotFound
+# Lê o arquivo de configurações
+with open('server/configuracoes.txt', 'r') as f:
+    config = json.load(f)
 
-cache = {}
+# Configurações de conexão 
+TIME_LIMIT = config.get('limit-time')  # Retorna o tempo limite para armazenar o cache de noícias.
+
 
 def use_cache(expire_minutes=None):
     """ 
@@ -28,12 +32,19 @@ def use_cache(expire_minutes=None):
         def wrapper(*args, **kwargs):
             # Gera chave única serializada em JSON
             key = json.dumps( {"f": func.__name__, "a": args, "k": kwargs}, default=str, sort_keys=True)
-            now = time.time()
+            
+            # Captura o timestamp atual
+            now = datetime.now()
+
+            print(now)
 
             # Verifica cache existente e validade (atribui o resultado à variável item e ao mesmo tempo avalia se o valor é verdadeiro)
             if (item := cache.get(key)):
                 result, ts = item
-                if not expire_minutes or now - ts < expire_minutes * 60:
+                # Compara o tempo atual com o timestamp do cache
+                time_diff = (now - ts).total_seconds()
+                
+                if not expire_minutes or time_diff < expire_minutes * 60:
                     print("Pegou do cache")
                     return result
 
@@ -100,6 +111,9 @@ class Operations:
     @use_cache()
     def factorial(self, x: str) -> str:
         return self.execute(consts.FAC, x)
+    
+    def check_primes(self, *numbers: list[str]) -> list[str]:
+        return self.execute(consts.PRIME, numbers)
 
     @use_cache(expire_minutes=5)
     def get_uol_news(self) -> str:

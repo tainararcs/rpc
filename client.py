@@ -1,5 +1,6 @@
 from Operations import Operations
 from exceptions import RpcServerNotFound  
+
 import datetime
 import json
 
@@ -17,7 +18,8 @@ try:
     op = Operations(HOST, PORT)
 
     print('\nSoma:')
-    print('\t115.5 + 10 -> ', op.addition(115.5, 10.0))
+    print('\t115.5 + 10 -> ', op.addition(2, 1))
+    print('\t115.5 + 10 -> ', op.addition(3, 1))
     print('\t115 + 10 + 30 -> ', op.addition(115, 10, 30))
 
     print('\nSubtração:')
@@ -37,7 +39,14 @@ try:
     print('\nFatorial:')
     print('\t8 -> ', op.factorial(8.0))
     print('\t10 -> ', op.factorial(10.0))
-    print('\t8 -> ', op.factorial(8.0))
+    print('\t8-> ', op.factorial(8.0))
+    print('\t102-> ', op.factorial(102))
+
+    print('\Primos:')
+    print('\t -> ', op.factorial(8.0))
+    print('\t -> ', op.factorial(10.0))
+    print('\t -> ', op.factorial(8.0))
+    print('\t -> ', op.factorial(102))
 
 
     print('\nNotícias do site da UOL no dia', datetime.date.today(), ':')
@@ -45,6 +54,3 @@ try:
 
 except RpcServerNotFound as e:
     print(e)
-
-
-

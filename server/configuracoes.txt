@@ -1,4 +1,6 @@
 {
     "ip": "127.0.0.1",
-    "port": 11110
+    "port": 11110,
+    "limit-time": 5,
+    "limite-size": 100
 }
