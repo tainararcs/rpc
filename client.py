@@ -1,8 +1,9 @@
 from Operations import Operations
 from exceptions import RpcServerNotFound  
 
-import datetime
 import json
+import datetime
+
 
 # Lê o arquivo de configurações
 with open('server/configuracoes.txt', 'r') as f:
@@ -11,6 +12,7 @@ with open('server/configuracoes.txt', 'r') as f:
 # Configurações de conexão 
 HOST = config.get('ip')  # Retorna '127.0.0.1'
 PORT = config.get('port')  # Retorna 11100
+
 
 # Teste
 
@@ -42,15 +44,15 @@ try:
     print('\t8-> ', op.factorial(8.0))
     print('\t102-> ', op.factorial(102))
 
-    print('\Primos:')
-    print('\t -> ', op.factorial(8.0))
-    print('\t -> ', op.factorial(10.0))
-    print('\t -> ', op.factorial(8.0))
-    print('\t -> ', op.factorial(102))
+    numbers_list = list(range(12))
+    print('\nPrimos:')
+    print('\t -> ', op.check_primes(*numbers_list))
 
 
     print('\nNotícias do site da UOL no dia', datetime.date.today(), ':')
     print(op.get_uol_news())
+
+    print()
 
 except RpcServerNotFound as e:
     print(e)
