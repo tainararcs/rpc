@@ -9,3 +9,6 @@ FAC = 'fac'
 PRIME = 'prime'
 NEWS = 'news'
 EXIT = 'sair'
+
+# Arquivos
+CONFIG_FILE = 'server/settings.json'

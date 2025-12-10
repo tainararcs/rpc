@@ -124,9 +124,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
 
     # Espera no máximo 30 segundos por conexão
     operations_socket.settimeout(100)  
-
-    while True:
-        try:
+    
+    try:
+        while True:
             connection, address = operations_socket.accept()
             print(f'Conectado com {address}')
 
@@ -146,9 +146,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
 
                 connection.sendall(str(response).encode())
 
-        except (socket.error, ConnectionRefusedError) as e:
-            raise exceptions.RpcServerNotFound(f'Erro no servidor de operações:\n\n{e}')
-        except KeyboardInterrupt:
-            print('\n\nServidor de operações encerrado pelo usuário (CTRL+C)')
-        finally:
-            print('Servidor Finalizando...\n')
+    except (socket.error, ConnectionRefusedError) as e:
+        raise exceptions.RpcServerNotFound(f'Erro no servidor de operações:\n\n{e}')
+    except KeyboardInterrupt:
+        print('\n\nServidor de operações encerrado pelo usuário (CTRL+C)')
+    finally:
+        print('Servidor Finalizando...\n')

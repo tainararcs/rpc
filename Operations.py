@@ -2,10 +2,11 @@
     Define a interface de operações para o cliente.
 ''' 
 
-import client_tcp as client
 import server.consts as consts
+import server.utils as utils
 from exceptions import RpcServerNotFound 
 
+import socket
 from datetime import datetime
 import json
 import functools  # Requerido por wraps
@@ -14,12 +15,8 @@ import functools  # Requerido por wraps
 # Dicionário simples para simular cache em memória principal
 cache = {} # cache[key] = (resultado, timestamp)
 
-# Lê o arquivo de configurações
-with open('server/configuracoes.txt', 'r') as f:
-    config = json.load(f)
-
 # Configurações de conexão 
-TIME_LIMIT = config.get('limit-time')  # Retorna o tempo limite para armazenar o cache de noícias.
+TIME_LIMIT = utils.get_limit_time()  # Retorna o tempo limite para armazenar o cache de noícias.
 
 
 def use_cache(expire_minutes=None):
@@ -38,8 +35,6 @@ def use_cache(expire_minutes=None):
             # Captura o timestamp atual
             now = datetime.now()
 
-            # print(now)
-
             # Verifica cache existente e validade (atribui o resultado à variável item e ao mesmo tempo avalia se o valor é verdadeiro)
             if (item := cache.get(key)):
                 result, ts = item
@@ -47,7 +42,7 @@ def use_cache(expire_minutes=None):
                 time_diff = (now - ts).total_seconds()
                 
                 if not expire_minutes or time_diff < expire_minutes * 60:
-                    # print('Pegou do cache')
+                    print('Pegou do cache')
                     return result
 
             try:
@@ -58,7 +53,7 @@ def use_cache(expire_minutes=None):
             except RpcServerNotFound:
                 # Se servidor estiver offline, retorna o cache se existir
                 if key in cache:
-                    # print('Servidor offline, usando cache')
+                    print('Servidor offline, usando cache')
                     return cache[key][0] 
                 raise # senão, relança o erro
         return wrapper
@@ -94,7 +89,19 @@ class Operations:
             message = f'{operation}\n' + '\n'.join(str(a) for a in args)
         else:
             message = operation
-        return client.execute_remote_operation(self.ip, self.port, message)
+
+        try:
+            # IP do client_server
+            with utils.create_socket(self.ip, self.port, socket.SOCK_STREAM) as final_socket:                
+                # Envia a operação codificada
+                final_socket.sendall(message.encode())
+
+                # Aguarda e retorna a resposta decodificada 
+                return final_socket.recv(4096).decode()
+            
+        except (socket.error, ConnectionRefusedError) as e:
+            raise RpcServerNotFound(f'Erro ao conectar no client_server: {e}')
+
 
     @use_cache()
     def addition(self, *numbers: list[str]) -> str:
@@ -116,6 +123,7 @@ class Operations:
     def factorial(self, x: str) -> str:
         return self.execute(consts.FAC, x)
     
+    @use_cache()
     def check_primes(self, *numbers: list[str]) -> list[str]:
         return self.execute(consts.PRIME, *numbers)
 
