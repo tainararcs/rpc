@@ -1,0 +1,13 @@
+{
+    "ip-client": "127.0.0.1",
+    "port-client": 11110,
+    
+    "ip-operations": "127.0.0.1",
+    "port-operations": 11111,
+    
+    "ip-dns": "127.0.0.1",
+    "port-dns": 11112,
+    
+    "limit-time": 5,
+    "cache-size": 10000
+}
