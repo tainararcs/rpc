@@ -4,8 +4,8 @@
 
 import server.consts as consts
 import server.utils as utils
-import server.math_operations as math
-import server.general_operations as general
+import server.math_operations_service as math
+import server.general_operations_service as general
 import exceptions
 
 from collections import OrderedDict
@@ -49,6 +49,8 @@ def manage_request(parts_data: str) -> str:
             return math.check_primes(parts_data[1:])
         case consts.NEWS:
             return general.get_uol_news()
+        case consts.SOLVER:
+            return general.math_problem_solver(parts_data[1:])
         case _:
             return 'Operação inválida'
 
@@ -123,7 +125,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
     print(f'\nServidor ouvindo em {IP}:{PORT}')
 
     # Espera no máximo 30 segundos por conexão
-    operations_socket.settimeout(100)  
+    operations_socket.settimeout(160)  
     
     try:
         while True:

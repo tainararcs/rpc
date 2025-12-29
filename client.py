@@ -1,7 +1,6 @@
 from operations import Operations
 from exceptions import RpcServerNotFound  
 import server.utils as utils
-
 import datetime
 
 
@@ -45,6 +44,11 @@ try:
 
     print('\nNotícias do site da UOL no dia', datetime.date.today(), ':')
     print(op.get_uol_news())
+ 
+    print('\nResolução de problema matemático com Gemini:')
+    problem = "Calcule a raiz quadrada de 9 e 27"
+    print('\tResposta: ')
+    print(op.math_problem_solver(problem))
 
     print()
 

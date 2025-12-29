@@ -130,3 +130,6 @@ class Operations:
     @use_cache(expire_minutes=5)
     def get_uol_news(self) -> str:
         return self.execute(consts.NEWS)
+    
+    def math_problem_solver(self, msg: str) -> str:
+        return self.execute(consts.SOLVER, msg)

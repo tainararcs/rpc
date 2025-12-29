@@ -7,7 +7,13 @@
 
 import requests
 from bs4 import BeautifulSoup
+from google import genai 
+import dotenv
+import os
 
+API_KEY = 'AIzaSyDIbzQUOdhm1Nv-NIjMBlf6v8ZFSTt57sQ'
+MODEL = "gemini-2.5-flash"
+client = genai.Client(api_key=API_KEY)
 
 def get_uol_news() -> str:
     '''
@@ -35,3 +41,24 @@ def get_uol_news() -> str:
 
     # Retorna apenas os 10 primeiros títulos limpos
     return formatted
+
+def math_problem_solver(msg: str) -> str:
+    prompt = f'''
+        Você é um solucionador de problemas matemáticos.
+
+        1. Resolva o problema a seguir realizando todos os cálculos necessários internamente.
+        2. NÃO mostre o passo a passo.
+        3. NÃO explique o raciocínio.
+        
+        4. Retorne uma BREVE explicação do que foi calculado e APENAS o valor final da resposta.
+        5. Se houver mais de um resultado válido, retorne todos, separados por vírgula.
+        6. Não utilize markdown, listas ou texto adicional.
+
+        Problema: {msg}
+
+        Exemplo de Resposta:
+            "Raiz quadrada de 9 = 3
+             Raiz quadrada de 121: 11"
+        '''.strip()
+    response = client.models.generate_content(model=MODEL, contents=prompt)
+    return response.text or "Nenhuma resposta gerada."

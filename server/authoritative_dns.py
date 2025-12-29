@@ -41,7 +41,7 @@ try:
             if not data:
                 continue
 
-            print('Recebido no DNS:', data)
+            print('Recebido no DNS autoriatativo:\n', data)
 
             response = get_operation_server_ip(data)
 
