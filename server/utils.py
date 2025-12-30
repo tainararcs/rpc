@@ -50,7 +50,6 @@ def get_limit_time() -> str:
         config = json.load(f)
         return config.get('limit-time')
     
-
 def create_socket(host: str, port: str, type_connection: socket) -> socket.socket:
     '''
         Cria e retorna um socket TCP ou UDP conectado ao servidor especificado.

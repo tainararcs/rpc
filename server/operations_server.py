@@ -13,7 +13,6 @@ import os
 import socket
 import json
 
-
 CACHE_FILE = 'server/operations_cache.json'
 
 # Configurações de conexão 
@@ -21,7 +20,6 @@ IP = utils.get_ip_operations()        # Retorna '127.0.0.1'
 PORT = utils.get_port_operations()    # Retorna 11111
 
 MAX_CACHE_BYTES = utils.get_cache_size() # Retorna o limite de bytes do cache em disco
-
 
 # Recebe a operação enviada pelo cliente e chama a função correspondente à operação
 def manage_request(parts_data: str) -> str:
@@ -96,7 +94,7 @@ def write_cache(operation: str, result: str) -> None:
         cache = OrderedDict()
 
     # Adiciona a nova operação ao cache
-    print(f'Adicionando operação ao cache: {operation}')
+    print(f'Operação adicionada ao cache: {operation!r}')
     cache[operation] = result
 
     # Verifica o tamanho do cache antes da remoção
@@ -122,10 +120,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
     
     operations_socket.bind((IP, PORT))
     operations_socket.listen()
-    print(f'\nServidor ouvindo em {IP}:{PORT}')
-
-    # Espera no máximo 30 segundos por conexão
-    operations_socket.settimeout(160)  
+    print(f'\nServidor de operaçõees ouvindo em {IP}:{PORT}')
     
     try:
         while True:
@@ -154,3 +149,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
         print('\n\nServidor de operações encerrado pelo usuário (CTRL+C)')
     finally:
         print('Servidor Finalizando...\n')
+        

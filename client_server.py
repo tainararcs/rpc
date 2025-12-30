@@ -53,3 +53,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         print('\n\nServidor cliente encerrado pelo usuário (CTRL+C)')
     finally:
         print('Servidor Finalizando...\n')
+        

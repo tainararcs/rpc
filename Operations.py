@@ -11,13 +11,11 @@ from datetime import datetime
 import json
 import functools  # Requerido por wraps
 
-
 # Dicionário simples para simular cache em memória principal
 cache = {} # cache[key] = (resultado, timestamp)
 
 # Configurações de conexão 
 TIME_LIMIT = utils.get_limit_time()  # Retorna o tempo limite para armazenar o cache de noícias.
-
 
 def use_cache(expire_minutes=None):
     ''' 
@@ -74,7 +72,7 @@ class Operations:
         self.ip = ip
         self.port = port
 
-    def execute(self, operation: str, *args: list[str]) -> str:
+    def execute(self, operation: str, *args: str) -> str:
         '''
             Monta a operação para ser enviada ao servidor TCP.
 
@@ -84,11 +82,15 @@ class Operations:
             Returns: 
                 str: Resultado retornado pelo servidor.
         '''
-        # Monta a mensagem no formato esperado
-        if args and len(args) > 0:
-            message = f'{operation}\n' + '\n'.join(str(a) for a in args)
-        else:
-            message = operation
+        # Monta a mensagem no formato esperado pelo servidor
+        flat_args = []
+        for a in args:
+            if isinstance(a, str) and ',' in a:
+                flat_args.extend(x.strip() for x in a.split(','))
+            else:
+                flat_args.append(a)
+        
+        message = f'{operation}\n' + '\n'.join(flat_args)  
 
         try:
             # IP do client_server
@@ -102,21 +104,20 @@ class Operations:
         except (socket.error, ConnectionRefusedError) as e:
             raise RpcServerNotFound(f'Erro ao conectar no client_server: {e}')
 
-
     @use_cache()
-    def addition(self, *numbers: list[str]) -> str:
+    def addition(self, *numbers: str) -> str:
         return self.execute(consts.SUM, *numbers)
 
     @use_cache()
-    def subtraction(self, *numbers: list[str]) -> str:
+    def subtraction(self, *numbers: str) -> str:
         return self.execute(consts.SUB, *numbers)
 
     @use_cache()
-    def multiplication(self, *numbers: list[str]) -> str:
+    def multiplication(self, *numbers: str) -> str:
         return self.execute(consts.MUL, *numbers)
 
     @use_cache()
-    def division(self, *numbers: list[str]) -> str:
+    def division(self, *numbers: str) -> str:
         return self.execute(consts.DIV, *numbers)
 
     @use_cache()
@@ -124,7 +125,7 @@ class Operations:
         return self.execute(consts.FAC, x)
     
     @use_cache()
-    def check_primes(self, *numbers: list[str]) -> list[str]:
+    def check_primes(self, *numbers: str) -> str:
         return self.execute(consts.PRIME, *numbers)
 
     @use_cache(expire_minutes=5)

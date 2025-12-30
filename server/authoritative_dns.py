@@ -8,13 +8,11 @@ import json
 import socket
 import datetime
 
-
 # Configurações para se conectar com o DNS resolver
 IP = utils.get_ip_dns()      # Retorna '127.0.0.1'
 PORT = utils.get_port_dns()  # Retorna 1111
 
 DNS_TABLE = 'server/dns_table.json'
-
 
 def load_dns_table():
     with open(DNS_TABLE, 'r') as f:
@@ -41,7 +39,7 @@ try:
             if not data:
                 continue
 
-            print('Recebido no DNS autoriatativo:\n', data)
+            print('Operação recebida no DNS autoriatativo: ', data)
 
             response = get_operation_server_ip(data)
 
@@ -59,3 +57,4 @@ except KeyboardInterrupt:
     print('\n\nDNS authoritative encerrado pelo usuário (CTRL+C)')
 finally:
     print('Servidor Finalizando...\n')
+    

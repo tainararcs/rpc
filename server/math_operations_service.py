@@ -153,7 +153,6 @@ def check_primes(numbers: list[str]) -> str:
 
     return result
 
-
 def _is_prime(number: int) -> bool:
     '''
         Verifica se um número é primo.

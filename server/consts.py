@@ -10,6 +10,7 @@ PRIME = 'prime'
 NEWS = 'news'
 SOLVER = 'solver' # Mathematical problem solver with Gemini
 EXIT = 'sair'
+CALC = 'calc'  # Calculadora genérica
 
 # Arquivos
 CONFIG_FILE = 'server/settings.json'

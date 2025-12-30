@@ -11,7 +11,9 @@ from google import genai
 import dotenv
 import os
 
-API_KEY = 'AIzaSyDIbzQUOdhm1Nv-NIjMBlf6v8ZFSTt57sQ'
+dotenv.load_dotenv()
+
+API_KEY = dotenv.get_key(dotenv.find_dotenv(), 'API_KEY')
 MODEL = "gemini-2.5-flash"
 client = genai.Client(api_key=API_KEY)
 

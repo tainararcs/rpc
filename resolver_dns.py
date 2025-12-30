@@ -8,13 +8,11 @@ import socket
 import json 
 import datetime
 
-
 # Configurações para se conectar ao servidor de DNS autoritativo
 IP = utils.get_ip_dns()       # Retorna '127.0.0.1'
 PORT = utils.get_port_dns()   # Retorna 11111
 
 CACHE_FILE = 'dns_cache.json'
-
 
 def load_cache():
     pass
@@ -59,3 +57,4 @@ def lookup_service(operation: str) -> str:
         print('\n\nDNS resolver encerrado pelo usuário (CTRL+C)')
     finally:
         print('Servidor Finalizando...\n')
+        
