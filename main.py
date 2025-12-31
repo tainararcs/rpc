@@ -39,7 +39,7 @@ def main():
         op = Operations(IP, PORT)
 
         window = interface.create_interface()
-        interface.manage_interface_rpc(window, op, lambda operation, *payload: manage_send_operation(operation, payload, op))
+        interface.manage_interface_rpc(window, lambda operation, *payload: manage_send_operation(operation, payload, op))
         window.mainloop() # Loop principal da interface gráfica que a mantém aberta
 
     except RpcServerNotFound as e:

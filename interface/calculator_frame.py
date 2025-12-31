@@ -3,23 +3,42 @@ import tkinter as tk
 
 class CalculatorFrame(tk.Frame):
     def __init__(self, master, on_execute):
-        super().__init__(master)
+        super().__init__(master, bg='#ffffff')
         
         self.on_execute = on_execute
         
-        self.current = ""        # número sendo digitado (string)
-        self.numbers = []        # lista de números completos (strings)
+        self.current = ""
+        self.numbers = []
         self.operator = None
 
-        self.display = tk.Entry(self, font=('Arial', 18), justify='right', width=15)
-        self.display.grid(row=0, column=0, columnspan=4, pady=10)
+        # Container da calculadora com borda
+        calc_container = tk.Frame(self, bg='#f5f5f5', relief='solid', bd=1)
+        calc_container.pack(padx=20, pady=20)
+
+        # Display
+        self.display = tk.Entry(
+            calc_container,
+            font=('Segoe UI', 24, 'bold'),
+            justify='right',
+            width=15,
+            bg='#2b2b3c',
+            fg='#ffffff',
+            bd=0,
+            relief='flat',
+            insertbackground='#7c3aed'
+        )
+        self.display.grid(row=0, column=0, columnspan=4, padx=10, pady=10, ipady=15)
 
         self.buttons = [
-            ('C', 1, 0), 
-            ('7', 2, 0), ('8', 2, 1), ('9', 2, 2), ('/', 2, 3),
-            ('4', 3, 0), ('5', 3, 1), ('6', 3, 2), ('*', 3, 3),
-            ('1', 4, 0), ('2', 4, 1), ('3', 4, 2), ('-', 4, 3),
-            ('0', 5, 0), ('.', 5, 1), ('=', 5, 2), ('+', 5, 3),
+            ('C', 1, 0, '#ff6b6b', '#ffffff'),
+            ('7', 2, 0, '#ffffff', '#2b2b3c'), ('8', 2, 1, '#ffffff', '#2b2b3c'), 
+            ('9', 2, 2, '#ffffff', '#2b2b3c'), ('/', 2, 3, '#7c3aed', '#ffffff'),
+            ('4', 3, 0, '#ffffff', '#2b2b3c'), ('5', 3, 1, '#ffffff', '#2b2b3c'), 
+            ('6', 3, 2, '#ffffff', '#2b2b3c'), ('*', 3, 3, '#7c3aed', '#ffffff'),
+            ('1', 4, 0, '#ffffff', '#2b2b3c'), ('2', 4, 1, '#ffffff', '#2b2b3c'), 
+            ('3', 4, 2, '#ffffff', '#2b2b3c'), ('-', 4, 3, '#7c3aed', '#ffffff'),
+            ('0', 5, 0, '#ffffff', '#2b2b3c'), ('.', 5, 1, '#ffffff', '#2b2b3c'), 
+            ('=', 5, 2, '#4ade80', '#ffffff'), ('+', 5, 3, '#7c3aed', '#ffffff'),
         ]
 
         self.OP_MAP = {
@@ -29,11 +48,43 @@ class CalculatorFrame(tk.Frame):
             '/': consts.DIV,
         }
 
-        for text, row, col in self.buttons:
-            tk.Button(self, text=text, font=('Arial', 14), width=5, height=2, command=lambda t=text: self.on_click(t)).grid(row=row, column=col, padx=5, pady=5)
+        for text, row, col, bg_color, fg_color in self.buttons:
+            btn = tk.Button(
+                calc_container,
+                text=text,
+                font=('Segoe UI', 16, 'bold'),
+                width=5,
+                height=2,
+                bg=bg_color,
+                fg=fg_color,
+                activebackground=bg_color,
+                activeforeground=fg_color,
+                bd=0,
+                relief='flat',
+                cursor='hand2',
+                command=lambda t=text: self.on_click(t)
+            )
+            btn.grid(row=row, column=col, padx=5, pady=5, sticky='nsew')
+            
+            # Efeito hover
+            def on_enter(e, button=btn, color=bg_color):
+                brightness = 0.9 if color == '#ffffff' else 1.1
+                button.config(bg=self.adjust_color(color, brightness))
+            
+            def on_leave(e, button=btn, color=bg_color):
+                button.config(bg=color)
+            
+            btn.bind('<Enter>', on_enter)
+            btn.bind('<Leave>', on_leave)
     
-    def get(self):
-        return self.entry.get()
+    def adjust_color(self, hex_color, factor):
+        """Ajusta o brilho de uma cor hexadecimal"""
+        hex_color = hex_color.lstrip('#')
+        r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        r = min(255, max(0, int(r * factor)))
+        g = min(255, max(0, int(g * factor)))
+        b = min(255, max(0, int(b * factor)))
+        return f'#{r:02x}{g:02x}{b:02x}'
     
     def on_click(self, char: str):
         if char == 'C':
@@ -50,7 +101,6 @@ class CalculatorFrame(tk.Frame):
             self.clear()
             return
 
-        # Operador
         if char in self.OP_MAP:
             if not self.current:
                 return
@@ -61,7 +111,6 @@ class CalculatorFrame(tk.Frame):
             self.display.delete(0, tk.END)
             return
 
-        # Número decimal
         if char == '.':
             if '.' in self.current:
                 return
@@ -76,17 +125,9 @@ class CalculatorFrame(tk.Frame):
         if char.isdigit():
             self.current += char
             self.display.insert(tk.END, char)
-  
-
-    def execute(self):
-        operation = self.OP_MAP[self.operator]
-
-        self.on_execute(operation, *self.numbers)
-        self.clear()
 
     def clear(self):
         self.current = ""
         self.numbers.clear()
         self.operator = None
         self.display.delete(0, tk.END)
-        
