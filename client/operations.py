@@ -4,7 +4,6 @@
     Responsável por construir e enviar requisições via socket TCP para o client_server,
     bem como aplicar cache em memória para otimizar chamadas repetidas e permitir fallback offline.
 ''' 
-
 import server.consts as consts
 import server.utils as utils
 from server.exceptions import RpcServerNotFound 

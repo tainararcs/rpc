@@ -9,7 +9,6 @@ import requests
 from bs4 import BeautifulSoup
 from google import genai 
 import dotenv
-import os
 
 dotenv.load_dotenv()
 
@@ -22,7 +21,7 @@ def get_uol_news() -> str:
         Obtém as principais notícias do site da UOL.
 
         Returns: 
-            str: Lista formatada com os títulos das notícias.
+            str: Lista formatada com os títulos das notícias ou mensagem de erro.
     '''
     url = 'https://www.uol.com.br/'
     response = requests.get(url, timeout=10)
@@ -45,13 +44,20 @@ def get_uol_news() -> str:
     return formatted
 
 def math_problem_solver(msg: str) -> str:
+    '''
+        Resolve problemas matemáticos descritos em linguagem natural utilizando um modelo de IA generativa.
+
+        Args:
+            msg (str): Enunciado do problema matemático.
+        Returns:
+            str: Resposta textual gerada pelo modelo ou mensagem padrão caso nenhuma resposta seja produzida.
+    '''
     prompt = f'''
         Você é um solucionador de problemas matemáticos.
 
         1. Resolva o problema a seguir realizando todos os cálculos necessários internamente.
         2. NÃO mostre o passo a passo.
         3. NÃO explique o raciocínio.
-        
         4. Retorne uma BREVE explicação do que foi calculado e APENAS o valor final da resposta.
         5. Se houver mais de um resultado válido, retorne todos, separados por vírgula.
         6. Não utilize markdown, listas ou texto adicional.

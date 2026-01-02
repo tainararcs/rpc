@@ -10,10 +10,10 @@ import os
 
 # Configurações para se conectar ao servidor de DNS autoritativo
 IP = utils.get_ip_dns()       # Retorna '127.0.0.1'
-PORT = utils.get_port_dns()   # Retorna 11111
+PORT = utils.get_port_dns()   # Retorna 11112
 
 # Cache simples em memória. Estrutura: cache[key] = (resultado, timestamp)
-CACHE_FILE = 'dns_cache.json'
+CACHE_FILE = 'client/dns_cache.json'
 
 def search_operation(operation: str) -> dict:
     '''
@@ -25,11 +25,13 @@ def search_operation(operation: str) -> dict:
             dict | None: Dados do serviço (ip, port) ou None.
     '''
     # Garante que o arquivo exista
-    if os.path.exists(CACHE_FILE):
+    if not os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, 'w', encoding='utf-8') as f:
             json.dump({}, f)
         return None
-    else:
+
+    # Se existir, lê o cache
+    with open(CACHE_FILE, 'r', encoding='utf-8') as f:
         cache = json.load(f)
 
     return cache.get(operation.strip())

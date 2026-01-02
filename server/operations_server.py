@@ -1,5 +1,7 @@
 '''
-    Socket servidor.
+    Servidor de Operações do sistema RPC.
+    Recebe requisições TCP contendo operações e parâmetros, executa a função correspondente e retorna o resultado ao cliente.
+    Inclui um cache persistente em disco com controle de tamanho máximo.
 ''' 
 
 import server.consts as consts
@@ -76,8 +78,9 @@ def search_operation(operation: str) -> str | None:
 
 def write_cache(operation: str, result: str) -> None:
     '''
-        Grava o resultado de uma operação no cache, respeitando o limite de tamanho.
-
+        Armazena o resultado de uma operação no cache, respeitando o limite de tamanho.
+        - FIFO (remove operações mais antigas primeiro).
+        
         Args: 
             operation (str): Representação textual da operação (ex: 'sum 2 3').
             result (str): Resultado da operação a ser armazenado.

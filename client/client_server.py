@@ -10,7 +10,6 @@
     - Encaminhar a requisição ao servidor final.
     - Retornar a resposta ao cliente.
 ''' 
-
 import server.utils as utils
 import server.exceptions as excepts
 import client.resolver_dns as resolver_dns
@@ -45,7 +44,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 ip, port = resolver_dns.lookup_service(operation)
                 print(f'DNS autoritativo retornou: {ip}:{port} para "{operation}"')
 
-                # Conecta no servidor final
+                # Conecta no servidor final, cria o socket UDP do DNS resolver
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as final_socket:
                     final_socket.connect((ip, port))
 
