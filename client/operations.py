@@ -1,5 +1,8 @@
 '''
-    Define a interface de operações para o cliente.
+
+    Define a interface de operações do cliente RPC. 
+    Responsável por construir e enviar requisições via socket TCP para o client_server,
+    bem como aplicar cache em memória para otimizar chamadas repetidas e permitir fallback offline.
 ''' 
 
 import server.consts as consts
@@ -10,15 +13,23 @@ from datetime import datetime
 import json
 import functools  # Requerido por wraps
 
-# Dicionário simples para simular cache em memória principal
-cache = {} # cache[key] = (resultado, timestamp)
+# Dicionário simples para simular cache em memória principal. Estrutura: cache[key] = (resultado, timestamp)
+cache = {} 
 
-# Configurações de conexão 
-TIME_LIMIT = utils.get_limit_time()  # Retorna o tempo limite para armazenar o cache de noícias.
+# Ttempo limite para armazenar o cache de noícias
+TIME_LIMIT = utils.get_limit_time()  
 
 def use_cache(expire_minutes=None):
     ''' 
-        Decorator Factory para cache em memória no cliente RPC. Com expiração opcional e fallback offline. 
+        Decorator Factory para cache em memória no cliente RPC.
+
+        Funcionalidades:
+        - Cache baseado na assinatura da função e seus argumentos.
+        - Expiração opcional por tempo.
+        - Fallback automático para cache em caso de servidor offline.
+
+        Args:
+            expire_minutes (int | None): Tempo máximo de validade do cache, em minutos. Se None, não expira.
     '''
     # Recebe a função a ser decorada (func) e retorna o wrapper
     def decorator(func):
@@ -61,11 +72,12 @@ class Operations:
         Classe responsável por enviar requisições de operações matemáticas para o servidor via socket TCP.
         Constroi a mensagem no formato esperado pelo servidor. Formato de mensagem: <OPERAÇÃO>\n<ARG1>\n<ARG2>\n...
 
+        A mensagem enviada segue o formato:
+        <OPERAÇÃO>\n<ARG1>\n<ARG2>
+
         Args:
             ip (str): Endereço IP do servidor.
-            port (int): Porta TCP do servidor.
-        Returns: 
-            str: Resultado da operação solicitada em string. 
+            port (int): Porta TCP do servidor. 
     '''
     def __init__(self, ip: str, port: str):
         self.ip = ip

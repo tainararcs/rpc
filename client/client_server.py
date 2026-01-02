@@ -1,5 +1,14 @@
 '''
-    Socket cliente. Gateway
+    Socket Cliente – Gateway de Operações
+    Implementa um servidor TCP que atua como um gateway entre clientes e servidores finais de operações. 
+    Ele recebe requisições, consulta um DNS autoritativo para descobrir qual serviço deve tratá-las e encaminha a mensagem para o servidor apropriado.
+
+    Responsabilidades:
+    - Escutar conexões TCP de clientes.
+    - Extrair a operação solicitada.
+    - Resolver o endereço do serviço via DNS.
+    - Encaminhar a requisição ao servidor final.
+    - Retornar a resposta ao cliente.
 ''' 
 
 import server.utils as utils
@@ -7,10 +16,11 @@ import server.exceptions as excepts
 import client.resolver_dns as resolver_dns
 import socket
 
-# Informações para se conectar ao servidor de DNS
+# Informações de rede para o gateway cliente
 IP = utils.get_ip_client()       # Retorna '127.0.0.1'
 PORT = utils.get_port_client()   # Retorna 11110
 
+# Criação do socket TCP do gateway
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:  
     client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     
@@ -31,7 +41,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 # Extrai apenas a operação (primeira linha)
                 operation = data.split('\n')[0]
 
-                # Descobre o serviço de operações pelo DNS (passa apenas a operação)
+                # Descobre o serviço de operações responsável pela operação usando o DNS 
                 ip, port = resolver_dns.lookup_service(operation)
                 print(f'DNS autoritativo retornou: {ip}:{port} para "{operation}"')
 

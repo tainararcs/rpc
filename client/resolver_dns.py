@@ -1,6 +1,7 @@
-# É acessado pelo client_socket, retorna para ele o ip do servidor de operações (ou o servidor de cada operação)
-# Ele que pergunta os ips
-
+'''
+    Cliente DNS responsável por resolver dinamicamente qual servidor é responsável por uma determinada operação no sistema RPC.
+    Inclui cache em memória e fallback offline.
+'''
 import server.utils as utils
 import server.exceptions as excepts
 import socket
@@ -11,9 +12,18 @@ import os
 IP = utils.get_ip_dns()       # Retorna '127.0.0.1'
 PORT = utils.get_port_dns()   # Retorna 11111
 
+# Cache simples em memória. Estrutura: cache[key] = (resultado, timestamp)
 CACHE_FILE = 'dns_cache.json'
 
-def search_operation(operation: str) -> str:
+def search_operation(operation: str) -> dict:
+    '''
+        Busca a operação no cache local.
+
+        Args:
+            operation (str): Nome da operação (ex: 'math', 'news').
+        Returns:
+            dict | None: Dados do serviço (ip, port) ou None.
+    '''
     # Garante que o arquivo exista
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, 'w', encoding='utf-8') as f:
@@ -25,6 +35,14 @@ def search_operation(operation: str) -> str:
     return cache.get(operation.strip())
 
 def write_cache(operation: str, ip: str, port: int) -> None:
+    '''
+        Armazena uma operação resolvida no cache local.
+
+        Args:
+            operation (str): Nome da operação.
+            ip (str): Endereço IP do serviço.
+            port (int): Porta do serviço.
+    '''
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, 'r', encoding='utf-8') as f:
             cache = json.load(f)
@@ -36,12 +54,15 @@ def write_cache(operation: str, ip: str, port: int) -> None:
     with open(CACHE_FILE, 'w', encoding='utf-8') as f:
         json.dump(cache, f, indent=4)
 
-def lookup_service(operation: str) -> str: 
+def lookup_service(operation: str) -> tuple[str, int]: 
     '''
-        Consulta o servidor DNS autoritativo para obter o endereço IP e a porta do servidor responsável por uma operação.
+        Consulta o DNS autoritativo para resolver uma operação.
 
         Args:
-            operation (str): Nome da operação (ex: 'math', 'news').
+            operation (str): Nome da operação (ex.: 'sum', 'news').
+
+        Returns:
+            tuple[str, int]: IP e porta do serviço.
     '''
     operation = operation.lower()
     cached = search_operation(operation)
@@ -68,6 +89,7 @@ def lookup_service(operation: str) -> str:
             if 'error' in response:
                 raise excepts.OperationNotFound(f'Operação "{operation}" não encontrada no DNS ({IP}:{PORT})') 
 
+            write_cache(operation, response['ip'], response['port'])
             return response['ip'], response['port']
 
     except socket.timeout:
