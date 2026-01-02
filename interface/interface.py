@@ -1,5 +1,5 @@
 import server.consts as consts
-from operations import Operations
+from client.operations import Operations
 from interface.prime_frame import PrimeFrame
 from interface.calculator_frame import CalculatorFrame
 from interface.factorial_frame import FactorialFrame

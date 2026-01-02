@@ -9,10 +9,8 @@ import sys
 import math
 import multiprocessing
 
-
 # Permite trabalhar com números de até ~1 milhão de dígitos
 sys.set_int_max_str_digits(1_000_000)  
-
 
 def convertNumbers(*numbers: list[str]) -> list:
     '''

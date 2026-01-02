@@ -2,8 +2,6 @@
 '''
 
 import server.consts as consts
-
-import socket
 import json
 
 # Servidor cliente
@@ -49,17 +47,3 @@ def get_limit_time() -> str:
     with open(consts.CONFIG_FILE, 'r') as f:
         config = json.load(f)
         return config.get('limit-time')
-    
-def create_socket(host: str, port: str, type_connection: socket) -> socket.socket:
-    '''
-        Cria e retorna um socket TCP ou UDP conectado ao servidor especificado.
-
-        Args:
-            host (str): Endereço IP do servidor.
-            port (int): Porta TCP do servidor.
-        Returns: 
-            socket.socket: Socket TCP ou UDP conectado ao servidor.
-    '''
-    new_socket = socket.socket(socket.AF_INET, type_connection)
-    new_socket.connect((host, port))
-    return new_socket

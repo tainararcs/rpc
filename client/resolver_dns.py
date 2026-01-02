@@ -2,11 +2,10 @@
 # Ele que pergunta os ips
 
 import server.utils as utils
-import exceptions as excepts
-
+import server.exceptions as excepts
 import socket
 import json 
-import datetime
+import os
 
 # Configurações para se conectar ao servidor de DNS autoritativo
 IP = utils.get_ip_dns()       # Retorna '127.0.0.1'
@@ -14,11 +13,28 @@ PORT = utils.get_port_dns()   # Retorna 11111
 
 CACHE_FILE = 'dns_cache.json'
 
-def load_cache():
-    pass
+def search_operation(operation: str) -> str:
+    # Garante que o arquivo exista
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump({}, f)
+        return None
+    else:
+        cache = json.load(f)
 
-def save_cache(cache):
-    pass
+    return cache.get(operation.strip())
+
+def write_cache(operation: str, ip: str, port: int) -> None:
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+            cache = json.load(f)
+    else:
+        cache = {}
+
+    cache[operation] = {'ip': ip, 'port': port}
+
+    with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(cache, f, indent=4)
 
 def lookup_service(operation: str) -> str: 
     '''
@@ -27,8 +43,13 @@ def lookup_service(operation: str) -> str:
         Args:
             operation (str): Nome da operação (ex: 'math', 'news').
     '''
+    operation = operation.lower()
+    cached = search_operation(operation)
 
-    # Verifica se a operação está no cache
+    # Verifica se a operação está em cache
+    if cached:
+        print(f'\nOperação {operation} já disponível em cache')
+        return cached['ip'], cached['port']
     
     # Consulta DNS autoritativo via UDP
     try: 
@@ -45,14 +66,14 @@ def lookup_service(operation: str) -> str:
             response = json.loads(data.decode())
 
             if 'error' in response:
-                raise excepts.RpcServerNotFound(f'Operação "{operation}" não encontrada no DNS ({IP}:{PORT})') # Trocar exceção
+                raise excepts.OperationNotFound(f'Operação "{operation}" não encontrada no DNS ({IP}:{PORT})') 
 
             return response['ip'], response['port']
 
     except socket.timeout:
-        raise excepts.RpcServerNotFound(f'Timeout ao conectar no DNS ({IP}:{PORT})')
+        raise excepts.RpcServerNotFound(f'\nTimeout ao conectar no DNS ({IP}:{PORT})')
     except Exception as e:
-        raise excepts.RpcServerNotFound(f'Erro no servidor Resolver DNS ({IP}:{PORT})\n\n{e}')
+        raise excepts.RpcServerNotFound(f'\nErro no servidor Resolver DNS ({IP}:{PORT})\n\n{e}')
     except KeyboardInterrupt:
         print('\n\nDNS resolver encerrado pelo usuário (CTRL+C)')
     finally:

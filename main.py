@@ -1,6 +1,6 @@
 import interface.interface as interface
-from operations import Operations
-from exceptions import RpcServerNotFound  
+from client.operations import Operations
+from server.exceptions import RpcServerNotFound  
 import server.utils as utils
 from tkinter import messagebox
 

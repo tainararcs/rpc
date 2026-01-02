@@ -2,8 +2,7 @@
 # Ele quem responde
 
 import server.utils as utils
-import exceptions as excepts
-
+import server.exceptions as excepts
 import json
 import socket
 import datetime
@@ -52,7 +51,7 @@ try:
             server_socket.sendto(str(payload).encode(), address)
 
 except (socket.error, ConnectionRefusedError) as e:
-    raise excepts.RpcServerNotFound(f'Erro no servidor Authoritative DNS\n\n{e})')
+    raise excepts.RpcServerNotFound(f'\nErro no servidor Authoritative DNS\n\n{e})')
 except KeyboardInterrupt:
     print('\n\nDNS authoritative encerrado pelo usuário (CTRL+C)')
 finally:

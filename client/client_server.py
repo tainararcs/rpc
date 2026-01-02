@@ -3,10 +3,9 @@
 ''' 
 
 import server.utils as utils
-import resolver_dns as resolver_dns
-
+import server.exceptions as excepts
+import client.resolver_dns as resolver_dns
 import socket
-import exceptions
 
 # Informações para se conectar ao servidor de DNS
 IP = utils.get_ip_client()       # Retorna '127.0.0.1'
@@ -37,7 +36,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 print(f'DNS autoritativo retornou: {ip}:{port} para "{operation}"')
 
                 # Conecta no servidor final
-                with utils.create_socket(ip, port, socket.SOCK_STREAM) as final_socket:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as final_socket:
+                    final_socket.connect((ip, port))
+
                     # Envia a mensagem completa (operação + argumentos)
                     final_socket.sendall(data.encode())
 
@@ -48,7 +49,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 connection.sendall(str(response).encode())
 
     except (socket.error, ConnectionRefusedError) as e:
-        raise exceptions.RpcServerNotFound(f'Erro no servidor cliente:\n\n{e}')
+        raise excepts.RpcServerNotFound(f'\nErro no servidor cliente:\n\n{e}')
     except KeyboardInterrupt:
         print('\n\nServidor cliente encerrado pelo usuário (CTRL+C)')
     finally:

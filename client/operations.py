@@ -4,8 +4,7 @@
 
 import server.consts as consts
 import server.utils as utils
-from exceptions import RpcServerNotFound 
-
+from server.exceptions import RpcServerNotFound 
 import socket
 from datetime import datetime
 import json
@@ -40,7 +39,7 @@ def use_cache(expire_minutes=None):
                 time_diff = (now - ts).total_seconds()
                 
                 if not expire_minutes or time_diff < expire_minutes * 60:
-                    print('Pegou do cache')
+                    print('Operação já disponívem em cache')
                     return result
 
             try:
@@ -94,7 +93,8 @@ class Operations:
 
         try:
             # IP do client_server
-            with utils.create_socket(self.ip, self.port, socket.SOCK_STREAM) as final_socket:                
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as final_socket:            
+                final_socket.connect((self.ip, self.port))    
                 # Envia a operação codificada
                 final_socket.sendall(message.encode())
 

@@ -6,8 +6,7 @@ import server.consts as consts
 import server.utils as utils
 import server.math_operations_service as math
 import server.general_operations_service as general
-import exceptions
-
+import server.exceptions as excepts
 from collections import OrderedDict
 import os
 import socket
@@ -83,7 +82,7 @@ def write_cache(operation: str, result: str) -> None:
             operation (str): Representação textual da operação (ex: 'sum 2 3').
             result (str): Resultado da operação a ser armazenado.
     '''
-    # Lê o cache existente, se existir
+    # Lê o cache existente
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, 'r') as f:
             try:
@@ -106,7 +105,6 @@ def write_cache(operation: str, result: str) -> None:
         cache.popitem(last=False)  # Remove o item mais antigo
         cache_size = len(json.dumps(cache).encode())  # Atualiza o tamanho do cache
 
-
     # Verifica se o cache tem tamanho válido para ser gravado
     if (cache_size + len(result)) < MAX_CACHE_BYTES:
         with open(CACHE_FILE, 'w') as f:
@@ -114,7 +112,6 @@ def write_cache(operation: str, result: str) -> None:
     else:
         print('Cache excedeu o tamanho limite, não foi possível gravar')
 
-# Será q da pra usar utils.create_connection aqui?
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
     operations_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     
@@ -125,7 +122,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
     try:
         while True:
             connection, address = operations_socket.accept()
-            print(f'Conectado com {address}')
+            print(f'Conectado com {address}\n')
 
             with connection:
                 data = connection.recv(4096).decode().lower()
@@ -135,7 +132,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
                 # Envia os parâmetros da requisição para serem pesquisados no cache
                 cache = search_operation(data)
                 if cache:
-                    print('\nPegou do cache')
+                    print('\nOperação já disponível em cache')
                     response = cache
                 else:  
                     response = manage_request(data.strip().split('\n'))
@@ -144,7 +141,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as operations_socket:
                 connection.sendall(str(response).encode())
 
     except (socket.error, ConnectionRefusedError) as e:
-        raise exceptions.RpcServerNotFound(f'Erro no servidor de operações:\n\n{e}')
+        raise excepts.RpcServerNotFound(f'\nErro no servidor de operações:\n\n{e}')
     except KeyboardInterrupt:
         print('\n\nServidor de operações encerrado pelo usuário (CTRL+C)')
     finally:
