@@ -1,12 +1,27 @@
+'''
+    Frame da calculadora gráfica da aplicação RPC.
+    Permite ao usuário realizar operações matemáticas básica e envia as requisições ao servidor via callback RPC.
+'''
 from server import consts
 import tkinter as tk
 
 class CalculatorFrame(tk.Frame):
-    def __init__(self, master, on_execute):
+    '''
+        Frame que representa a calculadora gráfica interativa.
+    '''
+    def __init__(self, master: tk.Widget, on_execute) -> None:
+        '''
+            Inicializa a calculadora.
+
+            Args:
+                master (tk.Widget): Widget pai.
+                on_execute (Callable): Callback para executar operações RPC.
+        '''
         super().__init__(master, bg='#cccccc')
         
         self.on_execute = on_execute
         
+        # Estado interno da calculadora
         self.current = ""
         self.numbers = []
         self.operator = None
@@ -42,6 +57,7 @@ class CalculatorFrame(tk.Frame):
             '/': consts.DIV,
         }
 
+        # Criação dos botões
         for text, row, col, bg_color, fg_color in self.buttons:
             btn = tk.Button(
                 calc_container, text=text, font=('Segoe UI', 16, 'bold'), width=5,
@@ -67,9 +83,15 @@ class CalculatorFrame(tk.Frame):
             btn.bind('<Enter>', on_enter)
             btn.bind('<Leave>', on_leave)
     
-    def adjust_color(self, hex_color, factor):
+    def adjust_color(self, hex_color: str, factor: float) -> str:
         '''
-            Ajusta o brilho de uma cor hexadecimal
+            Ajusta o brilho de uma cor hexadecimal.
+
+            Args:
+                hex_color (str): Cor em formato hexadecimal (#RRGGBB).
+                factor (float): Fator de brilho (>1 aumenta, <1 diminui).
+            Returns:
+                str: Nova cor ajustada.
         '''
         hex_color = hex_color.lstrip('#')
         r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
@@ -78,7 +100,13 @@ class CalculatorFrame(tk.Frame):
         b = min(255, max(0, int(b * factor)))
         return f'#{r:02x}{g:02x}{b:02x}'
     
-    def on_click(self, char: str):
+    def on_click(self, char: str) -> None:
+        '''
+            Trata o clique de um botão da calculadora.
+
+            Args:
+                char (str): Valor do botão pressionado.
+        '''
         if char == 'C':
             self.clear()
             return
@@ -122,7 +150,13 @@ class CalculatorFrame(tk.Frame):
             self.current += char
             self.display.insert(tk.END, char)
 
-    def clear(self, keep_result=None):
+    def clear(self, keep_result=None) -> None:
+        '''
+            Limpa o estado da calculadora.
+
+            Args:
+                keep_result (Optional[Any]): Resultado a ser mantido no display.
+        '''
         self.current = ""
         self.numbers.clear()
         self.operator = None

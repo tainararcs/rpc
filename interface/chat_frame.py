@@ -1,7 +1,21 @@
+'''
+    Frame de interação com o resolvedor matemático baseado em IA.
+'''
 import tkinter as tk
 
 class ChatFrame(tk.Frame):
-    def __init__(self, master, operation, on_execute):
+    '''
+        Frame para envio de problemas matemáticos para IA via RPC.
+    '''
+    def __init__(self, master: tk.Widget, operation: str, on_execute) -> None:
+        '''
+            Inicializa o frame de chat.
+
+            Args:
+                master (tk.Widget): Widget pai.
+                operation (str): Identificador da operação RPC.
+                on_execute (Callable): Callback de execução RPC.
+        '''
         super().__init__(master,bg='#cccccc')
         
         self.operation = operation
@@ -76,14 +90,23 @@ class ChatFrame(tk.Frame):
         btn.bind('<Enter>', lambda e: btn.config(bg='#000011'))
         btn.bind('<Leave>', lambda e: btn.config(bg='#000011'))
 
-    def get(self):
+    def get(self) -> str:
+        '''
+            Recupera o texto digitado, removendo o placeholder se necessário.
+
+            Returns:
+                str: Texto do problema matemático.
+        '''
         text = self.text.get("1.0", "end-1c").strip()
         # Remove o placeholder 
         if text == "Ex: Resolva a equação 2x + 5 = 15":
             return ""
         return text
 
-    def execute(self):
+    def execute(self) -> None:
+        '''
+            Envia o problema matemático via callback RPC e exibe o resultado.
+        '''
         text = self.get()
         if not text:
             return
@@ -91,7 +114,13 @@ class ChatFrame(tk.Frame):
         result = self.on_execute(self.operation, text)
         self.show_result(result)
 
-    def show_result(self, result):
+    def show_result(self, result: str) -> None:
+        '''
+            Exibe o resultado retornado pela IA no label de saída.
+
+            Args:
+                result (Any): Resultado retornado pela operação RPC.
+        '''
         if result is None:
             self.output.config(text="Nenhuma resposta retornada.")
             return

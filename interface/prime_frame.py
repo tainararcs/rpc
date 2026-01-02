@@ -1,9 +1,19 @@
+'''
+'    Frame da interface gráfica responsável pela verificação de números primos.Frame da interface gráfica responsável pela verificação de números primos.
+
+'''
 import tkinter as tk
 
-# usuário digita → clica Calcular → callback → RPC → resultado
-
 class PrimeFrame(tk.Frame):
-    def __init__(self, master, operation, on_execute):
+    def __init__(self, master: tk.Widget, operation: str, on_execute) -> None:
+        '''
+            Inicializa o frame de verificação de números primos.
+
+            Args:
+                master (tk.Widget): Widget pai.
+                operation (str): Identificador da operação RPC (ex.: 'prime').
+                on_execute (Callable): Callback para execução RPC.
+        '''
         super().__init__(master, bg='#cccccc')
 
         self.operation = operation
@@ -63,12 +73,21 @@ class PrimeFrame(tk.Frame):
         btn.bind('<Enter>', lambda e: btn.config(bg='#0f172e'))
         btn.bind('<Leave>', lambda e: btn.config(bg='#0f172e'))
 
-    def execute(self):
+    def execute(self) -> None:
+        '''
+            Executa a verificação de números primos via callback RPC e exibe o resultado.
+        '''
         value = self.entry.get().strip()
         result = self.on_execute(self.operation, value)
         self.show_result(result)
 
-    def show_result(self, result):
+    def show_result(self, result: str) -> None:
+        '''
+            Exibe o resultado da verificação no label de saída.
+
+            Args:
+                result (Any): Resultado retornado pela operação RPC.
+        '''
         if result is None:
             self.output.config(text="Resultado inválido.")
             return

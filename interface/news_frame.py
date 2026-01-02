@@ -1,7 +1,16 @@
+'''
+    Frame responsável pela exibição de notícias retornadas pelo servidor RPC.
+'''
 import tkinter as tk
 
 class NewsFrame(tk.Frame):
-    def __init__(self, master):
+    '''
+        Frame de visualização de notícias com scroll.
+    '''
+    def __init__(self, master: tk.Widget) -> None:
+        '''
+            Inicializa o frame de notícias.
+        '''
         super().__init__(master, bg='#cccccc')
 
         # Card central
@@ -20,7 +29,7 @@ class NewsFrame(tk.Frame):
         separator = tk.Frame(card, bg='#e5e7eb', height=1)
         separator.pack(fill='x', padx=20, pady=(0, 10))
 
-        # Container do texto + scroll
+        # Container do texto com scroll
         text_container = tk.Frame(card, bg='#ffffff')
         text_container.pack(fill='both', expand=True, padx=20, pady=(0, 20))
 
@@ -42,6 +51,12 @@ class NewsFrame(tk.Frame):
         self.text.config(state='disabled')
 
     def set_text(self, content: str):
+        '''
+            Atualiza o conteúdo textual exibido.
+
+            Args:
+                content (str): Texto a ser exibido.
+        '''
         self.text.config(state='normal')
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, content)

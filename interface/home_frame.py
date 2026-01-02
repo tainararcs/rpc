@@ -1,11 +1,21 @@
+'''
+    Frame inicial (Home) da aplicação RPC.
+    Apresenta uma tela de boas-vindas com descrição do sistema
+    e cards informativos sobre as funcionalidades disponíveis.
+'''
 import tkinter as tk
 
 class HomeFrame(tk.Frame):
     '''
-        Frame inicial moderno com boas-vindas e informações do sistema
+        Frame inicial moderno com boas-vindas e informações do sistema.
     '''
-    
-    def __init__(self, master):
+    def __init__(self, master: tk.Widget) -> None:
+        '''
+             Inicializa o frame Home.
+
+            Args:
+                master (tk.Widget): Widget pai onde o frame será renderizado.
+        '''
         super().__init__(master, bg='#cccccc')
         
         # Container principal centralizado

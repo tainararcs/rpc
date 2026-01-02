@@ -1,10 +1,23 @@
+'''
+    Frame da interface gráfica responsável pelo cálculo de fatorial.
+    Permite ao usuário informar um número inteiro positivo e encaminha a operação para o servidor RPC.
+'''
+
 import tkinter as tk
 
 class FactorialFrame(tk.Frame):
     '''
-    
+        Frame para cálculo de fatorial via RPC.
     '''
-    def __init__(self, master, operation, on_execute):
+    def __init__(self, master: tk.Widget, operation: str, on_execute) -> None:
+        '''
+            Inicializa o frame de fatorial.
+
+            Args:
+                master (tk.Widget): Widget pai.
+                operation (str): Identificador da operação RPC (ex.: 'fac').
+                on_execute (Callable): Callback para execução RPC.
+        '''
         super().__init__(master, bg='#cccccc')
 
         self.operation = operation
@@ -57,12 +70,21 @@ class FactorialFrame(tk.Frame):
         btn.bind('<Enter>', lambda e: btn.config(bg='#0f172e'))
         btn.bind('<Leave>', lambda e: btn.config(bg='#0f172e'))
 
-    def execute(self):
+    def execute(self) -> None:
+        '''
+            Executa a operação de fatorial via callback RPC e exibe o resultado.
+        '''
         value = self.entry.get().strip()
         result = self.on_execute(self.operation, value)
         self.show_result(result)
 
-    def show_result(self, result):
+    def show_result(self, result: str) -> None:
+        '''
+            Exibe o resultado da operação no label de saída.
+
+            Args:
+                result (Any): Resultado retornado pela operação RPC.
+        '''
         if result is None:
             self.output.config(text="Resultado inválido.")
             return
