@@ -12,25 +12,24 @@ def manage_send_operation(operation: str, payload, op: Operations):
     try:
         match operation:
             case 'sum':
-                result = op.addition(*payload)
+                return op.addition(*payload)
             case 'sub':
-                result = op.subtraction(*payload)
+                return op.subtraction(*payload)
             case 'mul':
-                result = op.multiplication(*payload)
+                return op.multiplication(*payload)
             case 'div':
-                result = op.division(*payload)
+                return op.division(*payload)
             case 'fac':
-                result = op.factorial(payload[0])
+                return op.factorial(payload[0])
             case 'prime':
-                result = op.check_primes(*payload)
+                return op.check_primes(*payload)
             case 'news':
                 return op.get_uol_news()
             case 'solver':
-                result = op.math_problem_solver(payload[0])
+                return op.math_problem_solver(payload[0])
             case _:
                 raise ValueError("Operação inválida")
-
-        messagebox.showinfo('Resultado', f'{result}')
+    
     except Exception as e:
         messagebox.showerror('Erro', str(e))
 

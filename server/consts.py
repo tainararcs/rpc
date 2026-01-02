@@ -1,4 +1,6 @@
-# Constantes da aplicação
+'''
+    Constantes da aplicação
+'''
 
 # Oprações
 SUM = 'sum'
@@ -11,6 +13,6 @@ NEWS = 'news'
 SOLVER = 'solver' # Mathematical problem solver with Gemini
 EXIT = 'sair'
 CALC = 'calc'  # Calculadora genérica
-
+HOME = 'home'
 # Arquivos
 CONFIG_FILE = 'server/settings.json'

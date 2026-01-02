@@ -39,7 +39,7 @@ def get_uol_news() -> str:
     titles = [t for t in titles if t] 
 
     # Monta string formatada com espaçamento e quebra de linha
-    formatted = '\n'.join(f'\t• {t}' for t in titles[:10])
+    formatted = '\n'.join(f'\t• {t}' for t in titles[:15])
 
     # Retorna apenas os 10 primeiros títulos limpos
     return formatted
