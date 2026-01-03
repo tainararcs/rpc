@@ -156,7 +156,7 @@ pip install -r requirements.txt
 
 #### Iniciar o servidor
 ```
-python3 -m server.operatrions_server.py
+python3 -m server.operatrions_server
 ```
 
 #### Iniciar o serviços de dns
