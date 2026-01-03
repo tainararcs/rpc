@@ -8,23 +8,35 @@ Com objetivo demonstrar a integração entre:
 - Comunicação cliente–servidor (RPC)
 - Integração com **IA para resolução de problemas matemáticos**
 - Consumo e exibição de notícias
+- Sistema de DNS customizado para resolução de serviços
 
-A aplicação 
+A aplicação demonstra conceitos de sistemas distribuídos, separação de responsabilidades e comunicação entre sockets de forma prática.
+
+<div align="center">
+  <img href="">
+</div>
 
 
 ### Arquitetura
 
-O sistema segue um modelo **Cliente → RPC → Servidor**, onde:
+O sistema segue um modelo **Cliente → RPC → Servidor**, com resolução DNS customizada, onde:
 
 - O **cliente** é responsável pela interface gráfica
 - O **servidor** executa as operações matemáticas e chamadas de IA
 - A comunicação ocorre por meio de **Remote Procedure Calls**
 
 ```
-┌────────────┐ RPC ┌──────────────┐
-│ Cliente │ ───────────▶ │ Servidor │
-│ (Tkinter)│ ◀─────────── │ (Operações) │
-└────────────┘ └──────────────┘
+┌──────────────┐         ┌──────────────┐         ┌─────────────────┐
+│   Cliente    │   RPC   │ DNS Resolver │  Query  │    DNS Server   │
+│  (Interface) │◄───────►│              │◄───────►│ (Authoritative) │
+└──────┬───────┘         └──────────────┘         └─────────────────┘
+       │                                                   │
+       │ RPC Call                                         │
+       ▼                                                   ▼
+┌──────────────────┐                                  ┌──────────────┐
+│     Servidor     │                                  │  DNS Table   │
+│ (Operações + IA) │                                  │ (Serviços)   │
+└──────────────────┘                                  └──────────────┘
 ```
 
 
@@ -56,7 +68,7 @@ O sistema segue um modelo **Cliente → RPC → Servidor**, onde:
 - Retorno de soluções explicadas
 
 
-## Estrutura do Projeto
+### Estrutura do Projeto
 ```
 .
 | main.py
@@ -120,7 +132,14 @@ Interface de interação com a IA para resolução de problemas matemáticos.
 - **Inteligência Artificial (Gemini)**
 - **Arquitetura modular**
 
----
+
+### Pré-requisitos
+
+- Python 3.10 ou superior
+- pip (gerenciador de pacotes Python)
+- Conexão com a internet (para IA e notícias)
+- Chave de API do Google Gemini (para funcionalidade de IA)
+
 
 ### Como Executar
 
