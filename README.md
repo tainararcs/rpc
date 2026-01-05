@@ -13,7 +13,7 @@ Com objetivo demonstrar a integração entre:
 A aplicação demonstra conceitos de sistemas distribuídos, separação de responsabilidades e comunicação entre sockets de forma prática.
 
 <div align="center">
-  <img href="">
+  <img src="assets/home.png" alt="RPC">
 </div>
 
 
@@ -46,26 +46,41 @@ O sistema segue um modelo **Cliente → RPC → Servidor**, com resolução DNS 
 - Operações básicas: soma, subtração, multiplicação e divisão
 - Interface moderna com feedback visual
 - Execução remota das operações
+<div align="center">
+  <img src="assets/calculator.png" alt="RPC">
+</div>
 
-#### - Fatorial
+### - Fatorial
 - Cálculo de fatorial de números inteiros positivos
 - Validação de entrada
 - Processamento via servidor RPC
+<div align="center">
+  <img src="assets/factorial.png" alt="RPC">
+</div>
 
-#### - Verificador de Números Primos
+### - Verificador de Números Primos
 - Verificação de múltiplos números simultaneamente
 - Entrada por lista separada por vírgulas
 - Retorno estruturado dos resultados
+<div align="center">
+  <img src="assets/prime.png" alt="RPC">
+</div>
 
 ### - Notícias
 - Exibição de notícias atualizadas
 - Interface somente leitura
 - Suporte a scroll vertical
+<div align="center">
+  <img src="assets/uol.png" alt="RPC">
+</div>
 
 ### - Resolvedor com IA
 - Envio de problemas matemáticos em linguagem natural
 - Integração com IA (ex.: Gemini)
 - Retorno de soluções explicadas
+<div align="center">
+  <img src="assets/ia.png" alt="RPC">
+</div>
 
 
 ### Estrutura do Projeto
