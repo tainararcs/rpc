@@ -1,5 +1,5 @@
 '''
-    Servidor de Operações do sistema RPC.
+    Servidor de notícias UOL.
     Recebe requisições TCP contendo operações e parâmetros, executa a função correspondente e retorna o resultado ao cliente.
     Inclui um cache persistente em disco com controle de tamanho máximo.
 ''' 
