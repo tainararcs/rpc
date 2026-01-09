@@ -46,27 +46,50 @@ def get_uol_news() -> str:
 def math_problem_solver(msg: str) -> str:
     '''
         Resolve problemas matemáticos descritos em linguagem natural utilizando um modelo de IA generativa.
+        Resolve utilizando raciocínio em duas etapas.
+        
+        1) Primeira chamada → gera um raciocínio detalhado (Chain of Thought).
+        2) Segunda chamada → sintetiza apenas uma explicação breve + resposta final, sem revelar cálculos ou passos intermediários.
 
         Args:
             msg (str): Enunciado do problema matemático.
         Returns:
             str: Resposta textual gerada pelo modelo ou mensagem padrão caso nenhuma resposta seja produzida.
     '''
-    prompt = f'''
+    cot_prompt = f'''
         Você é um solucionador de problemas matemáticos.
 
-        1. Resolva o problema a seguir realizando todos os cálculos necessários internamente.
-        2. NÃO mostre o passo a passo.
-        3. NÃO explique o raciocínio.
-        4. Retorne uma BREVE explicação do que foi calculado e APENAS o valor final da resposta.
-        5. Se houver mais de um resultado válido, retorne todos, separados por vírgula.
-        6. Não utilize markdown, listas ou texto adicional.
+        - Resolva o problema a seguir realizando todos os cálculos necessários.
+        - Realize todos os cálculos explicando passo a passo, use o Chain-of-Thought.
+        - Mostre todos os passos e cálculos.
 
         Problema: {msg}
+    '''.strip()
+    
+    cot_response = client.models.generate_content(model=MODEL, contents=cot_prompt)
+    cot_response = cot_response.text or "Nenhuma resposta gerada."
+
+    if len(cot_response) > 4000:
+            cot_response = cot_response[:4000] + "\n[resumo truncado]\n"
+
+    final_prompt = f'''
+        Com base na análise detalhada abaixo: 
+        {cot_response}
+
+        - Produza apenas uma breve explicação do que foi calculado e o resultado final.
+        - Não mostre cálculos. Não mostre passos.
+        - Não explique o raciocínio.
+        - Não use markdown, listas ou formatação especial.
+        - Se houver mais de uma resposta, retorne todas separadas por vírgula.
+        - Retorne uma BREVE explicação do que foi calculado e APENAS o valor final da resposta.
+        
+        Análise detalhada:\n{cot_response}
 
         Exemplo de Resposta:
             "Raiz quadrada de 9 = 3
              Raiz quadrada de 121: 11"
-        '''.strip()
-    response = client.models.generate_content(model=MODEL, contents=prompt)
-    return response.text or "Nenhuma resposta gerada."
+    '''.strip()
+
+    final_response = client.models.generate_content(model=MODEL, contents=final_prompt)
+
+    return final_response.text or "Nenhuma resposta gerada."

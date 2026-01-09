@@ -92,4 +92,4 @@ class PrimeFrame(tk.Frame):
             self.output.config(text="Resultado inválido.")
             return
 
-        self.output.config(text=f"Resultado: {result}")
+        self.output.config(text=f"Resultado:\n{result}")

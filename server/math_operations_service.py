@@ -149,7 +149,12 @@ def check_primes(numbers: list[str]) -> str:
     with multiprocessing.Pool(processes=2) as pool:
         result = pool.map(_is_prime, numbers)
 
-    return result
+    response_lines = []
+    for n, is_prime in zip(numbers, result):
+        status = "É primo ✔" if is_prime else "Não é primo ✖"
+        response_lines.append(f"{n}: {status}")
+
+    return "\n".join(response_lines)
 
 def _is_prime(number: int) -> bool:
     '''
