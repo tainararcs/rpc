@@ -1,12 +1,18 @@
 {
-    "ip-client": "127.0.0.1",
-    "port-client": 11110,
+    "ip-client-server": "127.0.0.1",
+    "port-client-server": 11110,
     
-    "ip-operations": "127.0.0.1",
-    "port-operations": 11111,
+    "ip-math-server": "127.0.0.1",
+    "port-math-server": 11111,
     
+    "ip-news-server": "127.0.0.1",
+    "port-news-server": 11112,
+
+    "ip-ia-server": "127.0.0.1",
+    "port-ia-server": 11113,
+
     "ip-dns": "127.0.0.1",
-    "port-dns": 11112,
+    "port-dns": 11114,
     
     "limit-time": 5,
     "cache-size": 10000

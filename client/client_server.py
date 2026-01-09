@@ -16,8 +16,8 @@ import client.resolver_dns as resolver_dns
 import socket
 
 # Informações de rede para o gateway cliente
-IP = utils.get_ip_client()       # Retorna '127.0.0.1'
-PORT = utils.get_port_client()   # Retorna 11110
+IP = utils.get_ip_client_server()       # Retorna '127.0.0.1'
+PORT = utils.get_port_client_server()   # Retorna 11110
 
 # Criação do socket TCP do gateway
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:  
@@ -28,8 +28,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
     client_socket.listen()
     print(f'\nServidor cliente ouvindo em {IP}:{PORT}')
 
-    try:    
-        while True:
+    while True:
+        try:    
             connection, address = client_socket.accept()
 
             with connection:
@@ -57,10 +57,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
                 # Envia a resposta de volta para o client_server
                 connection.sendall(str(response).encode())
 
-    except (socket.error, ConnectionRefusedError) as e:
-        raise excepts.RpcServerNotFound(f'\nErro no servidor cliente:\n\n{e}')
-    except KeyboardInterrupt:
-        print('\n\nServidor cliente encerrado pelo usuário (CTRL+C)')
-    finally:
-        print('Servidor Finalizando...\n')
-        
+        except (socket.error, ConnectionRefusedError) as e:
+            raise excepts.RpcServerNotFound(f'\nErro no servidor cliente:\n\n{e}')
+        except KeyboardInterrupt:
+            print('\n\nServidor cliente encerrado pelo usuário (CTRL+C)')
+        finally:
+            print('Servidor Finalizando...\n')
+            
