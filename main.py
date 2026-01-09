@@ -10,8 +10,8 @@ import server.utils as utils
 from tkinter import messagebox
 
 # Configurações de conexão 
-IP = utils.get_ip_client()      # Retorna '127.0.0.1'
-PORT = utils.get_port_client()  # Retorna 11110
+IP = utils.get_ip_client_server()      # Retorna '127.0.0.1'
+PORT = utils.get_port_client_server()  # Retorna 11110
 
 def manage_send_operation(operation: str, payload, op: Operations) -> str:
     '''

@@ -3,12 +3,11 @@
     Fornece funções auxiliares para leitura de configurações a partir do arquivo JSON central da aplicação.
 '''
 
-import json
 import server.consts as consts
-
+import json
 
 #  Configurações do cliente
-def get_ip_client() -> str:
+def get_ip_client_server() -> str:
     '''
         Retorna o endereço IP do servidor cliente (gateway).
 
@@ -17,9 +16,9 @@ def get_ip_client() -> str:
     '''
     with open(consts.CONFIG_FILE, 'r') as f:
         config = json.load(f)
-        return config.get('ip-client')
+        return config.get('ip-client-server')
 
-def get_port_client() -> int:
+def get_port_client_server() -> int:
     '''
         Retorna a porta TCP do servidor cliente (gateway).
 
@@ -28,11 +27,11 @@ def get_port_client() -> int:
     '''
     with open(consts.CONFIG_FILE, 'r') as f:
         config = json.load(f)
-        return int(config.get('port-client'))
+        return int(config.get('port-client-server'))
 
 
 # Configurações do servidor de operações
-def get_ip_operations() -> str:
+def get_ip_math_server() -> str:
     '''
         Retorna o endereço IP do servidor de operações.
 
@@ -41,10 +40,10 @@ def get_ip_operations() -> str:
     '''
     with open(consts.CONFIG_FILE, 'r') as f:
         config = json.load(f)
-        return config.get('ip-operations')
+        return config.get('ip-math-server')
 
 
-def get_port_operations() -> int:
+def get_port_math_server() -> int: 
     '''
         Retorna a porta TCP do servidor de operações.
 
@@ -53,8 +52,53 @@ def get_port_operations() -> int:
     '''
     with open(consts.CONFIG_FILE, 'r') as f:
         config = json.load(f)
-        return int(config.get('port-operations'))
+        return int(config.get('port-math-server'))
 
+def get_ip_news_server() -> str:
+    '''
+        Retorna o endereço IP do servidor de operações.
+
+        Returns:
+            str: Endereço IP configurado.
+    '''
+    with open(consts.CONFIG_FILE, 'r') as f:
+        config = json.load(f)
+        return config.get('ip-news-server')
+
+
+def get_port_news_server() -> int: 
+    '''
+        Retorna a porta TCP do servidor de operações.
+
+        Returns:
+            int: Porta configurada.
+    '''
+    with open(consts.CONFIG_FILE, 'r') as f:
+        config = json.load(f)
+        return int(config.get('port-news-server'))
+
+def get_ip_ia_server() -> str:
+    '''
+        Retorna o endereço IP do servidor de operações.
+
+        Returns:
+            str: Endereço IP configurado.
+    '''
+    with open(consts.CONFIG_FILE, 'r') as f:
+        config = json.load(f)
+        return config.get('ip-ia-server')
+
+
+def get_port_ia_server() -> int: 
+    '''
+        Retorna a porta TCP do servidor de operações.
+
+        Returns:
+            int: Porta configurada.
+    '''
+    with open(consts.CONFIG_FILE, 'r') as f:
+        config = json.load(f)
+        return int(config.get('port-ia-server'))
 
 # Configurações do DNS
 def get_ip_dns() -> str:
