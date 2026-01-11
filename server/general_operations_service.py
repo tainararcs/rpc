@@ -6,6 +6,7 @@
 '''
 
 import requests
+import json
 from bs4 import BeautifulSoup
 from google import genai 
 import dotenv
@@ -56,40 +57,48 @@ def math_problem_solver(msg: str) -> str:
         Returns:
             str: Resposta textual gerada pelo modelo ou mensagem padrão caso nenhuma resposta seja produzida.
     '''
-    cot_prompt = f'''
-        Você é um solucionador de problemas matemáticos.
+    try:
+        prompt = f'''
+            Você é um solucionador de problemas matemáticos.
 
-        - Resolva o problema a seguir realizando todos os cálculos necessários.
-        - Realize todos os cálculos explicando passo a passo, use o Chain-of-Thought.
-        - Mostre todos os passos e cálculos.
+            Resolva o problema abaixo seguindo as etapas:
+            1. Pense passo a passo e explique todo o raciocínio detalhadamente.
+            2. Em seguida produza apenas uma breve explicação + resposta final sem mostrar cálculos.
 
-        Problema: {msg}
-    '''.strip()
-    
-    cot_response = client.models.generate_content(model=MODEL, contents=cot_prompt)
-    cot_response = cot_response.text or "Nenhuma resposta gerada."
+            IMPORTANTE:
+            - A saída DEVE ser estritamente um JSON válido.
+            - Não escreva nada fora do JSON.
+            - O JSON deve ter exatamente esta estrutura:
+            - Não use markdown, listas ou formatação especial.
 
-    if len(cot_response) > 4000:
-            cot_response = cot_response[:4000] + "\n[resumo truncado]\n"
+            {{
+                "cot": "seu raciocínio passo a passo aqui",
+                "final_answer": "breve explicação + resposta final aqui"
+            }}
 
-    final_prompt = f'''
-        Com base na análise detalhada abaixo: 
-        {cot_response}
+            Exemplo de Resposta para final_answer:
+                "Raiz quadrada de 9 = 3"
+                "Raiz quadrada de 121: 11"
 
-        - Produza apenas uma breve explicação do que foi calculado e o resultado final.
-        - Não mostre cálculos. Não mostre passos.
-        - Não explique o raciocínio.
-        - Não use markdown, listas ou formatação especial.
-        - Se houver mais de uma resposta, retorne todas separadas por vírgula.
-        - Retorne uma BREVE explicação do que foi calculado e APENAS o valor final da resposta.
+            Problema: {msg}
+        '''.strip()
         
-        Análise detalhada:\n{cot_response}
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=prompt
+        )
 
-        Exemplo de Resposta:
-            "Raiz quadrada de 9 = 3
-             Raiz quadrada de 121: 11"
-    '''.strip()
+        text = response.text or ""
+        if not text:
+            return "Nenhuma resposta gerada."
 
-    final_response = client.models.generate_content(model=MODEL, contents=final_prompt)
+        # Tenta interpretar JSON
+        data = json.loads(text)
 
-    return final_response.text or "Nenhuma resposta gerada."
+        final = data.get("final_answer", "").strip()
+        return final if final else "Nenhuma resposta gerada."
+
+    except json.JSONDecodeError:
+        return "Erro: o modelo não retornou um JSON válido."
+    except Exception as e:
+        return f"Erro ao resolver problema: {e}"
